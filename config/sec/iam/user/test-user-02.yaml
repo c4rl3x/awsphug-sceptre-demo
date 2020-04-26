@@ -1,0 +1,9 @@
+template_path: sec/iam/user.yaml
+capabilities: CAPABILITY_IAM
+parameters:
+  Fullname: 'Test User 02'
+  UserName: 'testuser02@cpc'
+  Site: 'Makati'
+  Team: 'Quality Assurance'
+  Groups:
+    - !stack_output sec/iam/roles.yaml::opCpcQAGrp

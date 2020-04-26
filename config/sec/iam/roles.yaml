@@ -1,0 +1,12 @@
+# Create custom IAM roles.
+template_path: sec/iam/roles.yaml
+capabilities: CAPABILITY_IAM
+parameters:
+  Project: {{stack_group_config.project_code}}
+  Environment: {{stack_group_config.environment}}
+hooks:
+  before_create:
+    - !cmd "aws --profile {{ stack_group_config.profile }} s3 cp templates/sec/iam/roles.yaml s3://{{ stack_group_config.template_bucket_name }}/{{ stack_group_config.template_key_prefix }}/sec/iam/roles.yaml"
+  before_update:
+    - !cmd "aws --profile {{ stack_group_config.profile }} s3 cp templates/sec/iam/roles.yaml s3://{{ stack_group_config.template_bucket_name }}/{{ stack_group_config.template_key_prefix }}/sec/iam/roles.yaml"
+on_failure: "DELETE"

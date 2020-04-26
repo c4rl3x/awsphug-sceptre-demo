@@ -1,0 +1,33 @@
+Parameters:
+  Groups:
+    Type: CommaDelimitedList
+    Description: IAM Groups associated to user.
+  Fullname:
+    Type: String
+    Description: User's fullname
+  UserName:
+    Type: String
+    Description: User's login name.
+  Site:
+    Type: String
+    Description: User's site assignment.
+    Default: 'Makati'
+  Team:
+    Type: String
+    Description: User's team affilliation.
+    Default: 'DevOps'
+    
+Resources:
+  PdcUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref UserName
+      Groups: !Ref Groups
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/IAMUserChangePassword"
+        - "arn:aws:iam::aws:policy/IAMUserSSHKeys"
+      Tags:
+      - Key: Fullname
+        Value: !Ref Fullname
+      - Key: Site
+        Value: !Ref Site

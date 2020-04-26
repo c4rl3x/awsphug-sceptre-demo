@@ -1,0 +1,7 @@
+project_code: awsphug-demo
+region: ap-southeast-1
+
+profile: cpc
+environment: development
+template_bucket_name: cpc-sceptre-cfn-bkt
+template_key_prefix: v01

@@ -1,0 +1,9 @@
+template_path: sec/iam/user.yaml
+capabilities: CAPABILITY_IAM
+parameters:
+  Fullname: 'Test User 01'
+  UserName: 'testuser01@cpc'
+  Site: 'Makati'
+  Team: 'Fintech'
+  Groups:
+    - !stack_output sec/iam/roles.yaml::opCpcPowerUsersGrp

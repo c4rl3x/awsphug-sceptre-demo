@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  Project:
+    Type: String
+    Description: Project this resource is deployed.
+  Environment:
+    Type: String
+    Description: Environment this resource is deployed.
+Resources:
+  CommonIAMPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: CpcCommonIAMPol
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: 'ListUsersForConsole'
+            Effect: Allow
+            Action: 'iam:ListUsers'
+            Resource: 'arn:aws:iam::*:*'
+          - Sid: 'ViewAndUpdateAccessKeys'
+            Effect: Allow
+            Action:
+              - 'iam:UpdateAccessKey'
+              - 'iam:CreateAccessKey'
+              - 'iam:ListAccessKeys'
+              - 'iam:ListMFADevices'
+              - 'iam:ListSigningCertificates'
+              - 'iam:ListServiceSpecificCredentials'
+              - 'iam:ListUserPolicies'
+              - 'iam:GetUser'
+              - 'iam:ListGroupsForUser'
+            Resource: 'arn:aws:iam::*:user/${aws:username}'
+      Groups:
+        - !Ref CpcS3AssetsGrp
+        - !Ref CpcDataEngineerGrp
+        - !Ref CpcDevGrp
+
+  CpcDataEngineerGrp:
+    # Data Engineer IAM Group.
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: CpcDataEngineer
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonAthenaFullAccess
+        - arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess
+        - arn:aws:iam::aws:policy/AmazonRedshiftFullAccess
+
+  CpcDevGrp:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: CpcDevelopers
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+        - arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess
+        - arn:aws:iam::aws:policy/AWSLambdaFullAccess
+        - arn:aws:iam::aws:policy/AmazonKinesisFullAccess
+
+  CpcQAGrp:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: CpcQAGrp
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchReadOnlyAccess
+
+  CpcS3AssetsGrp:
+    # IAM Group allowing access to Static Assets in S3.
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: CpcS3StaticAssets
+
+  CpcPowerUsersGrp:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: PowerUsers
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+
+Outputs:
+  opDataEngGrp:
+    Description: 'Data Engineer Group ARN'
+    Value: !Ref CpcDataEngineerGrp
+
+  opCpcDevGrp:
+    Description: 'Apollo Developer Group ARN'
+    Value: !Ref CpcDevGrp
+
+  opCpcPowerUsersGrp:
+    Description: 'Apollo Power Users Group ARN'
+    Value: !Ref CpcPowerUsersGrp
+
+  opCpcQAGrp:
+    Description: 'Apollo QA Users Group ARN'
+    Value: !Ref CpcQAGrp
